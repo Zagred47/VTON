@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask API Demo</title>
+</head>
+<body>
+    <h1>Flask API Demo</h1>
+
+    <div>
+        <h2>Register</h2>
+        <form id="register-form">
+            <label for="register-username">Username:</label>
+            <input type="text" id="register-username" required>
+            <label for="register-password">Password:</label>
+            <input type="password" id="register-password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" required>
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Protected Resource</h2>
+        <button id="get-protected">Get Protected Resource</button>
+        <p id="protected-data"></p>
+    </div>
+
+    <script>
+        const apiUrl = 'http://127.0.0.1:5000/api';
+
+        document.getElementById('register-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            const response = await fetch(`${apiUrl}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            const response = await fetch(`${apiUrl}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                localStorage.setItem('access_token', result.access_token);
+                alert('Login successful');
+            } else {
+                alert(result.message);
+            }
+        });
+
+        document.getElementById('get-protected').addEventListener('click', async () => {
+            const token = localStorage.getItem('access_token');
+
+            if (!token) {
+                alert('Please log in first');
+                return;
+            }
+
+            const response = await fetch(`${apiUrl}/protected`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('protected-data').textContent = `Username: ${result.username}`;
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+</body>
+</html>
