@@ -8,8 +8,8 @@ import argparse
 from pyngrok import ngrok, conf
 import os
 def create_app():
-    conf.get_default().auth_token = "2hjx1FsNHqaSsPeEdjvGH4fuPhT_5nvEUth2Zrk3Uon7RFycf"
-    os.environ["FLASK_ENV"] = "development"
+    # conf.get_default().auth_token = "2hjx1FsNHqaSsPeEdjvGH4fuPhT_5nvEUth2Zrk3Uon7RFycf"
+    # os.environ["FLASK_ENV"] = "development"
     app = Flask(__name__)
     app.config.from_object(Config)
 
@@ -19,10 +19,10 @@ def create_app():
 
     app.register_blueprint(auth, url_prefix='/api')
 
-    public_url = ngrok.connect(7860).public_url
-    print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, 7860))
+    # public_url = ngrok.connect(7860).public_url
+    # print(" * ngrok tunnel \"{}\" -> \"http://127.0.0.1:{}/\"".format(public_url, 7860))
     
-    app.config["BASE_URL"] = public_url
+    # app.config["BASE_URL"] = public_url
 
 
     @app.route('/')
@@ -37,3 +37,4 @@ def create_app():
 if __name__ == '__main__':    
     app = create_app()
     app.run(debug=True, port=7860)
+    print(os.getpid())
