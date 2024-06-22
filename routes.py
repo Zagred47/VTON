@@ -58,7 +58,7 @@ def vton():
     
     img = request.files['image']
     garm_img = request.files['dress']
-    data = request['data']
+    data = request.form['data']
     category = data.get('category', '')
     garment_des = data.get('description', '')
 
