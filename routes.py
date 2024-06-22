@@ -49,6 +49,7 @@ def protected():
 @auth.route('/convert-to-bw', methods=['POST'])
 @jwt_required()
 def convert_to_bw():
+    print(request.files)
     if 'image' not in request.files:
         return jsonify({'message': 'No image file provided'}), 400
     
