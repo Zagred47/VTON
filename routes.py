@@ -46,15 +46,15 @@ def protected():
 
 
 
-@auth.route('/convert-to-bw', methods=['POST'])
+@auth.route('/vton', methods=['POST'])
 @jwt_required()
-def convert_to_bw():
+def vton():
     print(request.files)
     if 'image' not in request.files:
-        return jsonify({'message': 'No image file provided'}), 400
+        return jsonify({'message': f'No image file provided: {request.files}'}), 400
     
     if 'dress' not in request.files:
-        return jsonify({'message': 'No image file provided'}), 400
+        return jsonify({'message': f'No image file provided: {request.files}'}), 400
     
     img = request.files['image']
     garm_img = request.files['dress']
