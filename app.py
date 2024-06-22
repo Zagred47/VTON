@@ -6,6 +6,7 @@ from routes import auth
 from config import Config
 import argparse
 from pyngrok import ngrok, conf
+import os
 def create_app():
     conf.get_default().auth_token = "2hjx1FsNHqaSsPeEdjvGH4fuPhT_5nvEUth2Zrk3Uon7RFycf"
     os.environ["FLASK_ENV"] = "development"
