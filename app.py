@@ -36,6 +36,7 @@ def create_app():
 
 if __name__ == '__main__':    
     app = create_app()
-    app.run(debug=True)
+    
     with open('test.txt', 'w') as f:
         print(os.getpid(), file=f)
+    app.run(debug=True)
