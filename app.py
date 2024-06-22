@@ -7,6 +7,7 @@ from config import Config
 import argparse
 from pyngrok import ngrok, conf
 import os
+import sys
 def create_app():
     # conf.get_default().auth_token = "2hjx1FsNHqaSsPeEdjvGH4fuPhT_5nvEUth2Zrk3Uon7RFycf"
     # os.environ["FLASK_ENV"] = "development"
@@ -39,4 +40,4 @@ if __name__ == '__main__':
     
     with open('test.txt', 'w') as f:
         print(os.getpid(), file=f)
-    app.run(debug=True)
+    app.run(debug=True, port=int(sys.argv[1]))
