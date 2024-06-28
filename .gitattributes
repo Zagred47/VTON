@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+ckpt/densepose/model_final_162be9.pkl filter=lfs diff=lfs merge=lfs -text
+ckpt/humanparsing/parsing_atr.onnx filter=lfs diff=lfs merge=lfs -text
+ckpt/humanparsing/parsing_lip.onnx filter=lfs diff=lfs merge=lfs -text
+ckpt/openpose/ckpts filter=lfs diff=lfs merge=lfs -text
+ckpt/openpose/ckpts/body_pose_model.pth filter=lfs diff=lfs merge=lfs -text
