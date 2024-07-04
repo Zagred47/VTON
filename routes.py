@@ -67,7 +67,10 @@ def vton():
         garm_img = Image.open(io.BytesIO(garm_img.read()))
     except Exception as e:
         return jsonify({'message': f'Error processing images: {str(e)}'}), 400
-    
+
+    img = {
+        'background':img
+    }
 
     # check category in ["upper_body", "lower_body", "dresses"]
     if category not in ["upper_body", "lower_body", "dresses"]:
