@@ -62,6 +62,13 @@ def vton():
     category = data.get('category', '')
     garment_des = data.get('description', '')
 
+    try:
+        img = Image.open(io.BytesIO(img.read()))
+        garm_img = Image.open(io.BytesIO(garm_img.read()))
+    except Exception as e:
+        return jsonify({'message': f'Error processing images: {str(e)}'}), 400
+    
+
     # check category in ["upper_body", "lower_body", "dresses"]
     if category not in ["upper_body", "lower_body", "dresses"]:
         return jsonify({'message': 'Invalid category'}), 400
