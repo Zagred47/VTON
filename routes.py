@@ -85,7 +85,7 @@ def vton():
     img, masked_img = start_tryon(img, garm_img, garment_des, category, is_checked, is_checked_crop, denoise_steps, is_randomize_seed, seed, number_of_images)
 
 
-    
+    img = img[0]
 
     return send_file(img, mimetype='image/jpeg')
 
