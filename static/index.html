@@ -3,101 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask API Demo</title>
+    <title>API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form div {
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Flask API Demo</h1>
+    <div class="container">
+        <h1>API Tester</h1>
 
-    <div>
         <h2>Register</h2>
-        <form id="register-form">
-            <label for="register-username">Username:</label>
-            <input type="text" id="register-username" required>
-            <label for="register-password">Password:</label>
-            <input type="password" id="register-password" required>
-            <button type="submit">Register</button>
+        <form id="registerForm">
+            <div>
+                <label for="registerUsername">Username:</label>
+                <input type="text" id="registerUsername" name="username" required>
+            </div>
+            <div>
+                <label for="registerPassword">Password:</label>
+                <input type="password" id="registerPassword" name="password" required>
+            </div>
+            <input type="submit" value="Register">
         </form>
-    </div>
 
-    <div>
         <h2>Login</h2>
-        <form id="login-form">
-            <label for="login-username">Username:</label>
-            <input type="text" id="login-username" required>
-            <label for="login-password">Password:</label>
-            <input type="password" id="login-password" required>
-            <button type="submit">Login</button>
+        <form id="loginForm">
+            <div>
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" name="username" required>
+            </div>
+            <div>
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" name="password" required>
+            </div>
+            <input type="submit" value="Login">
         </form>
-    </div>
 
-    <div>
-        <h2>Protected Resource</h2>
-        <button id="get-protected">Get Protected Resource</button>
-        <p id="protected-data"></p>
+        <h2>Protected</h2>
+        <button id="protectedButton">Access Protected Route</button>
+        <p id="protectedResponse"></p>
+
+        <h2>Virtual Try-On (VTON)</h2>
+        <form id="vtonForm" enctype="multipart/form-data">
+            <div>
+                <label for="vtonImage">Image:</label>
+                <input type="file" id="vtonImage" name="image" accept="image/*" required>
+            </div>
+            <div>
+                <label for="vtonDress">Dress Image:</label>
+                <input type="file" id="vtonDress" name="dress" accept="image/*" required>
+            </div>
+            <div>
+                <label for="vtonCategory">Category:</label>
+                <select id="vtonCategory" name="category" required>
+                    <option value="upper_body">Upper Body</option>
+                    <option value="lower_body">Lower Body</option>
+                    <option value="dresses">Dresses</option>
+                </select>
+            </div>
+            <div>
+                <label for="vtonDescription">Description:</label>
+                <input type="text" id="vtonDescription" name="description">
+            </div>
+            <input type="submit" value="Try On">
+        </form>
+        <img id="vtonResult" alt="VTON Result" style="display:none; max-width: 100%;">
     </div>
 
     <script>
-        const apiUrl = 'http://127.0.0.1:5000/api';
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const protectedButton = document.getElementById('protectedButton');
+        const protectedResponse = document.getElementById('protectedResponse');
+        const vtonForm = document.getElementById('vtonForm');
+        const vtonResult = document.getElementById('vtonResult');
 
-        document.getElementById('register-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
+        let accessToken = '';
 
-            const response = await fetch(`${apiUrl}/register`, {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(registerForm);
+            const response = await fetch('/auth/register', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify(Object.fromEntries(formData)),
             });
-
-            const result = await response.json();
-            alert(result.message);
+            const data = await response.json();
+            alert(data.message);
         });
 
-        document.getElementById('login-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-
-            const response = await fetch(`${apiUrl}/login`, {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify(Object.fromEntries(formData)),
             });
-
-            const result = await response.json();
+            const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('access_token', result.access_token);
+                accessToken = data.access_token;
                 alert('Login successful');
             } else {
-                alert(result.message);
+                alert(data.message);
             }
         });
 
-        document.getElementById('get-protected').addEventListener('click', async () => {
-            const token = localStorage.getItem('access_token');
-
-            if (!token) {
-                alert('Please log in first');
-                return;
-            }
-
-            const response = await fetch(`${apiUrl}/protected`, {
+        protectedButton.addEventListener('click', async () => {
+            const response = await fetch('/auth/protected', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Authorization': `Bearer ${accessToken}`,
+                },
             });
-
-            const result = await response.json();
+            const data = await response.json();
             if (response.ok) {
-                document.getElementById('protected-data').textContent = `Username: ${result.username}`;
+                protectedResponse.textContent = `Username: ${data.username}`;
             } else {
-                alert(result.message);
+                protectedResponse.textContent = data.message;
+            }
+        });
+
+        vtonForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(vtonForm);
+            const response = await fetch('/auth/vton', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+                body: formData,
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                vtonResult.src = url;
+                vtonResult.style.display = 'block';
+            } else {
+                const data = await response.json();
+                alert(data.message);
             }
         });
     </script>
