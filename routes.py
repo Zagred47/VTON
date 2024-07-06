@@ -5,6 +5,7 @@ from PIL import Image
 import io
 import tempfile
 from tryon import start_tryon
+from flask import render_template
 
 auth = Blueprint('auth', __name__)
 
@@ -44,7 +45,9 @@ def protected():
     user = User.query.get(current_user_id)
     return jsonify(username=user.username), 200
 
-
+@app.route('/')
+def home():
+    return render_template('static/index.html')
 
 @auth.route('/vton', methods=['POST'])
 @jwt_required()
