@@ -45,7 +45,7 @@ def protected():
     user = User.query.get(current_user_id)
     return jsonify(username=user.username), 200
 
-@app.route('/')
+@auth.route('/')
 def home():
     return render_template('static/index.html')
 
